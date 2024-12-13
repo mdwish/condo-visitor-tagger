@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ResidentInfo } from "./ResidentForm";
 import { VisitorInfo } from "./VisitorForm";
-import QRCode from "qrcode.react";
+import { QRCodeSVG } from "qrcode.react";
 
 interface Props {
   resident: ResidentInfo;
@@ -58,7 +58,7 @@ export const ParkingPermit = ({ resident, visitor, permitId, onNewPermit }: Prop
           </div>
           
           <div className="flex flex-col items-center justify-center">
-            <QRCode
+            <QRCodeSVG
               value={JSON.stringify(permitData)}
               size={200}
               level="H"
