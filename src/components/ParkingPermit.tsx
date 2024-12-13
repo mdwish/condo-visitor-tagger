@@ -27,6 +27,8 @@ export const ParkingPermit = ({ resident, visitor, permitId, onNewPermit }: Prop
     validTo: visitor.endDate,
   };
 
+  const verificationUrl = `${window.location.origin}/verify?id=${permitId}&data=${encodeURIComponent(JSON.stringify(permitData))}`;
+
   return (
     <div className="w-full max-w-2xl animate-fadeIn">
       <Card className="p-8 mb-6 print:shadow-none" id="permit">
@@ -59,7 +61,7 @@ export const ParkingPermit = ({ resident, visitor, permitId, onNewPermit }: Prop
           
           <div className="flex flex-col items-center justify-center">
             <QRCodeSVG
-              value={JSON.stringify(permitData)}
+              value={verificationUrl}
               size={200}
               level="H"
               className="mb-4"
