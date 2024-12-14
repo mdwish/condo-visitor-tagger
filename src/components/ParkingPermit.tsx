@@ -31,14 +31,14 @@ export const ParkingPermit = ({ resident, visitor, permitId, onNewPermit }: Prop
 
   return (
     <div className="w-full max-w-2xl animate-fadeIn">
-      <Card className="p-8 mb-6 print:shadow-none" id="permit">
+      <Card className="p-8 mb-6 print:shadow-none print:w-1/2 print:mx-auto" id="permit">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-primary mb-2">Visitor Parking Permit</h1>
           <p className="text-sm text-gray-500">Permit ID: {permitId}</p>
         </div>
         
-        <div className="grid grid-cols-2 gap-8">
-          <div className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="space-y-4 order-2 md:order-1">
             <div>
               <h3 className="font-semibold mb-1">Resident Information</h3>
               <p>Name: {resident.name}</p>
@@ -59,12 +59,12 @@ export const ParkingPermit = ({ resident, visitor, permitId, onNewPermit }: Prop
             </div>
           </div>
           
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center order-1 md:order-2">
             <QRCodeSVG
               value={verificationUrl}
               size={200}
               level="H"
-              className="mb-4"
+              className="w-full max-w-[200px] mb-4"
             />
             <p className="text-sm text-gray-500">Scan to verify permit</p>
           </div>

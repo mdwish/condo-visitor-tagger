@@ -21,6 +21,14 @@ export const ResidentForm = ({ onNext }: Props) => {
     phone: "",
   });
 
+  const formatPhoneNumber = (value: string) => {
+    const numbers = value.replace(/\D/g, "").substring(0, 10);
+    if (numbers.length === 0) return "";
+    if (numbers.length < 4) return `(${numbers}`;
+    if (numbers.length < 7) return `(${numbers.slice(0, 3)}) ${numbers.slice(3)}`;
+    return `(${numbers.slice(0, 3)}) ${numbers.slice(3, 6)}-${numbers.slice(6)}`;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onNext(formData);
@@ -52,10 +60,10 @@ export const ResidentForm = ({ onNext }: Props) => {
           <Label htmlFor="phone">Phone Number</Label>
           <Input
             id="phone"
-            type="tel"
             required
             value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, phone: formatPhoneNumber(e.target.value) })}
+            placeholder="(XXX) XXX-XXXX"
           />
         </div>
         <Button type="submit" className="w-full">Next</Button>
