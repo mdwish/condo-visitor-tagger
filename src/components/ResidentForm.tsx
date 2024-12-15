@@ -3,11 +3,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 export interface ResidentInfo {
   name: string;
   unit: string;
   phone: string;
+  email: string;
 }
 
 interface Props {
@@ -19,6 +21,7 @@ export const ResidentForm = ({ onNext }: Props) => {
     name: "",
     unit: "",
     phone: "",
+    email: "",
   });
 
   const formatPhoneNumber = (value: string) => {
@@ -29,8 +32,24 @@ export const ResidentForm = ({ onNext }: Props) => {
     return `(${numbers.slice(0, 3)}) ${numbers.slice(3, 6)}-${numbers.slice(6)}`;
   };
 
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (formData.phone.replace(/\D/g, "").length !== 10) {
+      toast.error("Please enter a valid 10-digit phone number");
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
     onNext(formData);
   };
 
@@ -64,6 +83,16 @@ export const ResidentForm = ({ onNext }: Props) => {
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: formatPhoneNumber(e.target.value) })}
             placeholder="(XXX) XXX-XXXX"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="email">Email Address</Label>
+          <Input
+            id="email"
+            type="email"
+            required
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
         </div>
         <Button type="submit" className="w-full">Next</Button>

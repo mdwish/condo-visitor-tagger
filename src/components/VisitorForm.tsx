@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 
 export interface VisitorInfo {
   name: string;
   phone: string;
-  email: string;
   vehicleMake: string;
   vehicleModel: string;
   licensePlate: string;
@@ -21,11 +21,27 @@ interface Props {
   onNext: (data: VisitorInfo) => void;
 }
 
+const VEHICLE_MAKES = [
+  "Acura", "Audi", "BMW", "Buick", "Cadillac", "Chevrolet", "Chrysler", "Dodge",
+  "Ford", "GMC", "Honda", "Hyundai", "Infiniti", "Jeep", "Kia", "Lexus",
+  "Lincoln", "Mazda", "Mercedes-Benz", "Mercury", "Mini", "Mitsubishi", "Nissan",
+  "Pontiac", "Porsche", "Ram", "Saturn", "Scion", "Subaru", "Tesla", "Toyota",
+  "Volkswagen", "Volvo"
+];
+
+const VEHICLE_MODELS: { [key: string]: string[] } = {
+  Toyota: ["Camry", "Corolla", "RAV4", "Highlander", "Prius", "Tacoma", "Tundra"],
+  Honda: ["Civic", "Accord", "CR-V", "Pilot", "Odyssey", "HR-V", "Ridgeline"],
+  Ford: ["F-150", "Escape", "Explorer", "Mustang", "Edge", "Ranger", "Bronco"],
+  Chevrolet: ["Silverado", "Equinox", "Malibu", "Traverse", "Tahoe", "Suburban"],
+  Nissan: ["Altima", "Sentra", "Rogue", "Maxima", "Pathfinder", "Frontier"],
+  // Add more models for other makes as needed
+};
+
 export const VisitorForm = ({ onBack, onNext }: Props) => {
   const [formData, setFormData] = useState<VisitorInfo>({
     name: "",
     phone: "",
-    email: "",
     vehicleMake: "",
     vehicleModel: "",
     licensePlate: "",
@@ -41,16 +57,11 @@ export const VisitorForm = ({ onBack, onNext }: Props) => {
     return `(${numbers.slice(0, 3)}) ${numbers.slice(3, 6)}-${numbers.slice(6)}`;
   };
 
-  const validateEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateEmail(formData.email)) {
-      toast.error("Please enter a valid email address");
+    if (formData.phone.replace(/\D/g, "").length !== 10) {
+      toast.error("Please enter a valid 10-digit phone number");
       return;
     }
 
@@ -66,6 +77,12 @@ export const VisitorForm = ({ onBack, onNext }: Props) => {
 
     if (endDate <= startDate) {
       toast.error("End date must be after start date");
+      return;
+    }
+
+    const daysDifference = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    if (daysDifference > 7) {
+      toast.error("Permit duration cannot exceed 7 days");
       return;
     }
 
@@ -95,34 +112,43 @@ export const VisitorForm = ({ onBack, onNext }: Props) => {
             placeholder="(XXX) XXX-XXXX"
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="visitorEmail">Visitor's Email</Label>
-          <Input
-            id="visitorEmail"
-            type="email"
-            required
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          />
-        </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="vehicleMake">Vehicle Make</Label>
-            <Input
-              id="vehicleMake"
-              required
+            <Select
               value={formData.vehicleMake}
-              onChange={(e) => setFormData({ ...formData, vehicleMake: e.target.value })}
-            />
+              onValueChange={(value) => setFormData({ ...formData, vehicleMake: value, vehicleModel: "" })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select make" />
+              </SelectTrigger>
+              <SelectContent>
+                {VEHICLE_MAKES.map((make) => (
+                  <SelectItem key={make} value={make}>
+                    {make}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="vehicleModel">Vehicle Model</Label>
-            <Input
-              id="vehicleModel"
-              required
+            <Select
               value={formData.vehicleModel}
-              onChange={(e) => setFormData({ ...formData, vehicleModel: e.target.value })}
-            />
+              onValueChange={(value) => setFormData({ ...formData, vehicleModel: value })}
+              disabled={!formData.vehicleMake}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select model" />
+              </SelectTrigger>
+              <SelectContent>
+                {formData.vehicleMake && VEHICLE_MODELS[formData.vehicleMake]?.map((model) => (
+                  <SelectItem key={model} value={model}>
+                    {model}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <div className="space-y-2">
@@ -131,7 +157,7 @@ export const VisitorForm = ({ onBack, onNext }: Props) => {
             id="licensePlate"
             required
             value={formData.licensePlate}
-            onChange={(e) => setFormData({ ...formData, licensePlate: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, licensePlate: e.target.value.toUpperCase() })}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">

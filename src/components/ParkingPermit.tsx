@@ -31,31 +31,37 @@ export const ParkingPermit = ({ resident, visitor, permitId, onNewPermit }: Prop
 
   return (
     <div className="w-full max-w-2xl animate-fadeIn">
-      <Card className="p-8 mb-6 print:shadow-none print:w-1/2 print:mx-auto" id="permit">
+      <Card className="p-8 mb-6 mx-auto max-w-[600px] print:w-1/2 print:mx-auto print:shadow-none" id="permit">
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-primary mb-2">Visitor Parking Permit</h1>
-          <p className="text-sm text-gray-500">Permit ID: {permitId}</p>
+          <h1 className="text-2xl font-bold mb-1">Sussex House</h1>
+          <h2 className="text-xl mb-2">Temporary Visitor Parking Permit</h2>
+          <p className="text-sm mb-1">Permit #{permitId}</p>
+          <p className="text-sm text-gray-600">
+            Authorized on {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
+          </p>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-4 order-2 md:order-1">
-            <div>
-              <h3 className="font-semibold mb-1">Resident Information</h3>
-              <p>Name: {resident.name}</p>
-              <p>Unit: {resident.unit}</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="font-semibold">Unit:</p>
+                <p>{resident.unit}</p>
+              </div>
+              <div>
+                <p className="font-semibold">Start:</p>
+                <p>{new Date(visitor.startDate).toLocaleDateString()}</p>
+              </div>
+              <div>
+                <p className="font-semibold">End:</p>
+                <p>{new Date(visitor.endDate).toLocaleDateString()}</p>
+              </div>
             </div>
             
             <div>
-              <h3 className="font-semibold mb-1">Visitor Information</h3>
-              <p>Name: {visitor.name}</p>
-              <p>Vehicle: {visitor.vehicleMake} {visitor.vehicleModel}</p>
-              <p>License Plate: {visitor.licensePlate}</p>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-1">Validity Period</h3>
-              <p>From: {visitor.startDate}</p>
-              <p>To: {visitor.endDate}</p>
+              <p className="font-semibold mb-1">Vehicle Description:</p>
+              <p>{visitor.vehicleMake} {visitor.vehicleModel}</p>
+              <p className="mt-1">License: {visitor.licensePlate}</p>
             </div>
           </div>
           
@@ -68,6 +74,11 @@ export const ParkingPermit = ({ resident, visitor, permitId, onNewPermit }: Prop
             />
             <p className="text-sm text-gray-500">Scan to verify permit</p>
           </div>
+        </div>
+
+        <div className="mt-6 text-center text-sm text-gray-600">
+          <p>Must be displayed visibly on the vehicle's dashboard.</p>
+          <p>Guests may park in any available parking spot.</p>
         </div>
       </Card>
       
