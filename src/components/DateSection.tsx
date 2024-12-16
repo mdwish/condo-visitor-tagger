@@ -8,6 +8,11 @@ interface Props {
 }
 
 export const DateSection = ({ startDate, endDate, onChange }: Props) => {
+  // Get today's date at start of day in local timezone
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayStr = today.toISOString().split('T')[0];
+
   return (
     <div className="grid grid-cols-2 gap-4">
       <div className="space-y-2">
@@ -16,7 +21,7 @@ export const DateSection = ({ startDate, endDate, onChange }: Props) => {
           id="startDate"
           type="date"
           required
-          min={new Date().toISOString().split('T')[0]}
+          min={todayStr}
           value={startDate}
           onChange={(e) => onChange("startDate", e.target.value)}
         />
@@ -27,7 +32,7 @@ export const DateSection = ({ startDate, endDate, onChange }: Props) => {
           id="endDate"
           type="date"
           required
-          min={startDate || new Date().toISOString().split('T')[0]}
+          min={startDate || todayStr}
           value={endDate}
           onChange={(e) => onChange("endDate", e.target.value)}
         />

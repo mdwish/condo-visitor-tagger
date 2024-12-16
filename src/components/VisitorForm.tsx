@@ -44,11 +44,17 @@ export const VisitorForm = ({ onBack, onNext }: Props) => {
       return;
     }
 
+    // Get today's date at start of day in local timezone
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const startDate = new Date(formData.startDate);
-    const endDate = new Date(formData.endDate);
 
+    // Convert form dates to local timezone dates at start of day
+    const startDate = new Date(formData.startDate);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(formData.endDate);
+    endDate.setHours(0, 0, 0, 0);
+
+    // Compare dates
     if (startDate < today) {
       toast.error("Start date cannot be earlier than today");
       return;
