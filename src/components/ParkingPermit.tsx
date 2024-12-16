@@ -16,6 +16,12 @@ export const ParkingPermit = ({ resident, visitor, permitId, onNewPermit }: Prop
     window.print();
   };
 
+  // Format dates in local timezone
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr + 'T00:00:00');
+    return date.toLocaleDateString();
+  };
+
   const permitData = {
     permitId,
     resident: resident.name,
@@ -50,11 +56,11 @@ export const ParkingPermit = ({ resident, visitor, permitId, onNewPermit }: Prop
               </div>
               <div>
                 <p className="font-semibold">Start:</p>
-                <p>{new Date(visitor.startDate).toLocaleDateString()}</p>
+                <p>{formatDate(visitor.startDate)}</p>
               </div>
               <div>
                 <p className="font-semibold">End:</p>
-                <p>{new Date(visitor.endDate).toLocaleDateString()}</p>
+                <p>{formatDate(visitor.endDate)}</p>
               </div>
             </div>
             
