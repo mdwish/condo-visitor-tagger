@@ -48,19 +48,17 @@ export const VisitorForm = ({ onBack, onNext }: Props) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Convert form dates to local timezone dates at start of day
-    const startDate = new Date(formData.startDate);
-    startDate.setHours(0, 0, 0, 0);
-    const endDate = new Date(formData.endDate);
-    endDate.setHours(0, 0, 0, 0);
+    // Convert form dates to Date objects, preserving local timezone
+    const startDate = new Date(formData.startDate + 'T00:00:00');
+    const endDate = new Date(formData.endDate + 'T00:00:00');
 
-    // Compare dates
-    if (startDate < today) {
+    // Compare dates using getTime() for accurate comparison
+    if (startDate.getTime() < today.getTime()) {
       toast.error("Start date cannot be earlier than today");
       return;
     }
 
-    if (endDate <= startDate) {
+    if (endDate.getTime() <= startDate.getTime()) {
       toast.error("End date must be after start date");
       return;
     }

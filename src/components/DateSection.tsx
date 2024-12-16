@@ -8,9 +8,8 @@ interface Props {
 }
 
 export const DateSection = ({ startDate, endDate, onChange }: Props) => {
-  // Get today's date at start of day in local timezone
+  // Get today's date string in local timezone
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
   const todayStr = today.toISOString().split('T')[0];
 
   return (
